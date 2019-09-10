@@ -125,15 +125,17 @@ function addInfo(param,value,unit){
 }
 function calculate(mtow,motor_id){
 	// calculate current
-	var current = ((mtow/frame) * motor[motor_id].a * motor[motor_id].a + (mtow/frame) * motor[motor_id].b) * frame; // A
-	var battery_capacity = 1.15 * current * (flight_time/60); // Ah
+	var load = mtow/frame;
+	var current = 1.15 * (load * load * motor[motor_id].a + load * motor[motor_id].b) * frame; // A
+	var battery_capacity = current * (flight_time/60); // Ah
 	var battery_parallel = Math.ceil(battery_capacity/battery[selected_battery].capacity);
 	var battery_total = battery_parallel * motor[motor_id].battery;
 	var drive_weight = battery_total * battery[selected_battery].weight + frame * motor[motor_id].weight;
-	var frame_weight = mtow - 1.1*1.15*drive_weight/1000.0;
+	var frame_weight = mtow - 1.15 * drive_weight/1000.0;
 	var estimated_flight_time = 0.9 * 3600 * battery_parallel*battery[selected_battery].capacity / current;
 	//console.log(motor[motor_id].weight );
-	info = "";
+	info = motor[motor_id].name + "<br/>";
+	addInfo("Propeller",motor[motor_id].propeller,"");
 	addInfo("MTOW",mtow.toFixed(2),"kg");
 	addInfo("Current",current.toFixed(2),"A");
 	var str = motor[motor_id].battery+"S"+battery_parallel+"P"; 

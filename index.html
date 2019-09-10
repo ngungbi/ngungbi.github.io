@@ -21,6 +21,10 @@
     position: absolute;
     z-index: 1000;
 }
+.copyright{
+    margin-top:5pt;
+    text-align: center;
+}
 </style>
 </head>
 <body onload="init();">
@@ -28,7 +32,7 @@
 <form>
 <h1>Multirotor Thrust Table</h1>
 Payload: <input type="text" name="payload" id="payload" value="0" size="3"/>kg<br/>
-Flight Time: <input type="text" name="flightTime" id="flightTime" value="30" size="3"/>minutes<br/>
+Flight Time: <input type="text" name="flightTime" id="flightTime" value="20" size="3"/>minutes<br/>
 Frame:
 <input type="radio" name="frame" id="frame" value="4" checked/>4
 <input type="radio" name="frame" id="frame" value="6"/>6
@@ -44,8 +48,14 @@ MTOW:
 <input type="text" name="wMax" id="wMax" value="15" size="3" />kg<br/>
 <input type="button" value="Calculate" onclick="main();"/>
 <div id="theTable">
-	
 </div>
+<br/>
+<br/>
+<br/>
+<br/>
+<p class="copyright">
+Copyright 2019 Harish Mahatma Putra.
+</p>
 </form>
 </body>
 </html>
