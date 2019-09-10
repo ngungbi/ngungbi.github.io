@@ -1,1 +1,50 @@
-Halo dunia!
+<html>
+<head>
+<title>Thrust Table</title>
+<script src="motor.js"></script>
+<script src="core.js"></script>
+<style>
+	body{
+		font-family:sans-serif;
+	}
+.ht:hover .tooltip {
+    display:block;
+    alignment-baseline: left;
+}
+.tooltip {
+    display: none;
+    text-align: left;
+    background: #eeeeee;
+    margin-left: 28px; /* moves the tooltip to the right */
+    margin-top: 15px; /* moves it down */
+    position: absolute;
+    z-index: 1000;
+}
+</style>
+</head>
+<body onload="init();">
+
+<form>
+<h1>Multirotor Thrust Table</h1>
+Payload: <input type="text" name="payload" id="payload" value="0" size="3"/>kg<br/>
+Flight Time: <input type="text" name="flightTime" id="flightTime" value="30" size="3"/>minutes<br/>
+Frame:
+<input type="radio" name="frame" id="frame" value="4" checked/>4
+<input type="radio" name="frame" id="frame" value="6"/>6
+<input type="radio" name="frame" id="frame" value="8"/>8
+<input type="radio" name="frame" value="-1"/>Custom:<input type="text" name="frame_custom" id="frame_custom" value="3" size="2"/><br/>
+Battery:
+<select name="battery" id="battery">
+	
+</select><br/>
+MTOW:
+<input type="text" name="wMin" id="wMin" value="1" size="3"/>kg
+<input type="text" name="wStep" id="wStep" value="1" size="3" />kg
+<input type="text" name="wMax" id="wMax" value="15" size="3" />kg<br/>
+<input type="button" value="Calculate" onclick="main();"/>
+<div id="theTable">
+	
+</div>
+</form>
+</body>
+</html>
