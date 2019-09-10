@@ -134,6 +134,7 @@ function calculate(mtow,motor_id){
 	var estimated_flight_time = 0.9 * 3600 * battery_parallel*battery[selected_battery].capacity / current;
 	//console.log(motor[motor_id].weight );
 	info = "";
+	addInfo("MTOW",mtow.toFixed(2),"kg");
 	addInfo("Current",current.toFixed(2),"A");
 	var str = motor[motor_id].battery+"S"+battery_parallel+"P"; 
 	addInfo("Battery",str,"");
@@ -160,7 +161,7 @@ function main(){
 	// Make table header
 	the_table += "<tr align='center'><td>Motor</td><td>Propeller</td>";
 	for(mtow=mtow_min;mtow<=mtow_max;mtow+=mtow_step){
-		the_table += "<td>"+mtow+"kg</td>";
+		the_table += "<td>"+mtow.toFixed(2)+"kg</td>";
 	}
 		//HSVtoRGB(60,1,1);
 	for(i=0;i<motor.length;i++){
