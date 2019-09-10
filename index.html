@@ -19,6 +19,7 @@
     background: #eeeeee;
     margin-left: 28px; /* moves the tooltip to the right */
     margin-top: 15px; /* moves it down */
+    padding: 5px;
     position: absolute;
     z-index: 1000;
 }
@@ -29,37 +30,58 @@
     margin-top:5pt;
     text-align: center;
 }
+.left{
+    float:left;
+    width: 50%;
+}
+.forminput:after{
+      content: "";
+  display: table;
+  clear: both;
+}
+.bottomspace{
+    padding-top: 120px;
+}
 </style>
 </head>
 <body onload="init();">
 
-<form onsubmit="main();return false" >
 <h1>Multirotor Thrust Table</h1>
-Payload: <input type="text" name="payload" id="payload" value="0" size="3"/>kg<br/>
-Flight Time: <input type="text" name="flightTime" id="flightTime" value="20" size="3"/>minutes<br/>
-Frame:
-<input type="radio" name="frame" id="frame" value="4" checked/>4
-<input type="radio" name="frame" id="frame" value="6"/>6
-<input type="radio" name="frame" id="frame" value="8"/>8
-<input type="radio" name="frame" value="-1"/>Custom:<input type="text" name="frame_custom" id="frame_custom" value="3" size="2"/><br/>
-Battery:
-<select name="battery" id="battery">
-	
-</select><br/>
-MTOW:
-<input type="text" name="wMin" id="wMin" value="1" size="3"/>kg
-<input type="text" name="wStep" id="wStep" value="1" size="3" />kg
-<input type="text" name="wMax" id="wMax" value="15" size="3" />kg<br/>
-<input type="submit" value="Calculate" onclick="main();"/>
+<form onsubmit="main();return false" >
+    <div class="forminput">
+        <div class="left">
+            Payload: <input type="text" name="payload" id="payload" value="0" size="3"/>kg<br/>
+            Flight Time: <input type="text" name="flightTime" id="flightTime" value="20" size="3"/>minutes<br/>
+            Battery: <select name="battery" id="battery" onchange="main();"></select><br/>
+            Frame:
+            <input type="radio" name="frame" id="frame" value="4" checked/>4
+            <input type="radio" name="frame" id="frame" value="6"/>6
+            <input type="radio" name="frame" id="frame" value="8"/>8
+            <input type="radio" name="frame" value="-1"/>Custom:<input type="text" name="frame_custom" id="frame_custom" value="3" size="2"/><br/>
+        </div>
+        <div class="left">
+            <b>Mapping</b><br/>
+            MTOW:<br/>
+            Min: <input type="text" name="wMin" id="wMin" value="1" size="3"/>kg
+            Max: <input type="text" name="wMax" id="wMax" value="15" size="3" />kg
+            Step: <input type="text" name="wStep" id="wStep" value="1" size="3" />kg<br/>
+            Thrust to Weight:<br/>
+            Min: <input type="text" name="ttwMin" id="ttwMin" value="1.6667" size="3"/>
+            Ideal: <input type="text" name="ttwMin" id="ttwIdeal" value="2" size="3"/>
+            Max: <input type="text" name="ttwMax" id="ttwMax" value="2.5" size="3"/>
+            <br/>
+        </div>
+    </div>
+            <input type="submit" value="Calculate" onclick="main();"/>
+            <input type="checkbox" name="hideImpossible" id="hideImpossible" checked="true"><label for="hideImpossible">Hide impossible configuration</label>
+</form>
+
 <div id="theTable">
 </div>
-<br/>
-<br/>
-<br/>
 <br/>
 <p class="copyright">
 Copyright 2019 Harish Mahatma Putra.
 </p>
-</form>
+<p class="bottomspace"></p>
 </body>
 </html>

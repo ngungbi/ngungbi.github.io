@@ -15,7 +15,7 @@ battery[2] = {
 	capacity:10	
 }
 battery[3] = {
-	name:"HG2 18650 28000mAh",
+	name:"LG18650HG2 28000mAh",
 	weight:50,
 	capacity:2.8	
 }

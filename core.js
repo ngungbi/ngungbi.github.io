@@ -5,6 +5,10 @@ var mtow_step;
 var frame;
 var payload;
 var selected_battery;
+var ttw_min;
+var ttw_max;
+var ttw_ideal;
+var hide_impossible = false;
 
 
 function getParams(){
@@ -16,15 +20,21 @@ function getParams(){
 	payload = parseFloat(document.getElementById("payload").value);
 	var frame_option = document.getElementsByName("frame");
 	for(var i=0; i<frame_option.length; i++){
-		//console.log(frame_option[i].checked);
 		if(frame_option[i].checked){
 			frame = parseInt(frame_option[i].value);
 		}
-		if(frame == -1){
-			frame = parseInt(document.getElementById("frame_custom").value);
-		}
 	}
-	//console.log(selected_battery);
+	if(frame == -1){ // custom frame
+		frame = parseInt(document.getElementById("frame_custom").value);
+	}
+	if(document.getElementById("hideImpossible").checked){
+		hide_impossible = true;
+	}else{
+		hide_impossible = false;
+	}
+	ttw_min = parseFloat(document.getElementById("ttwMin").value);
+	ttw_max = parseFloat(document.getElementById("ttwMax").value);
+	ttw_ideal = parseFloat(document.getElementById("ttwIdeal").value);
 }
 
 function HSVtoRGB(H,S,V){
@@ -74,9 +84,9 @@ function HSVtoRGB(H,S,V){
 
 function mapTTW(ttw){
 	var hue;
-	var min = 1.8;
-	var ideal = 2.0;
-	var max = 3.0;
+	var min = ttw_min;
+	var ideal = ttw_ideal;
+	var max = ttw_max;
 	// 1  : 0 (merah)
 	// 2  : 90 (hijau)
 	// 2,5: 60 (kuning)
@@ -115,8 +125,8 @@ function calculate(mtow,motor_id){
 	var battery_capacity = current * (flight_time/60); // Ah
 	var battery_parallel = Math.ceil(battery_capacity/battery[selected_battery].capacity);
 	var battery_total = battery_parallel * motor[motor_id].battery;
-	var drive_weight = battery_total * battery[selected_battery].weight + frame * motor[motor_id].weight;
-	var frame_weight = mtow - 1.15 * drive_weight/1000.0;
+	var drive_weight = 1.15*(battery_total * battery[selected_battery].weight + frame * motor[motor_id].weight)/1000;
+	var frame_weight = mtow - drive_weight;
 	var estimated_flight_time = 0.9 * 3600 * battery_parallel*battery[selected_battery].capacity / current;
 	//console.log(motor[motor_id].weight );
 	info = "<b>"+motor[motor_id].name + "</b><br/>";
@@ -127,6 +137,8 @@ function calculate(mtow,motor_id){
 	addInfo("Battery",str,"");
 	str = Math.floor(estimated_flight_time/60)+"m "+Math.floor(estimated_flight_time)%60+"s"; 
 	addInfo("Flight Time",str,"");
+	addInfo("Drive Weight",drive_weight.toFixed(2),"kg");
+	addInfo("Available Weight",frame_weight.toFixed(2),"kg");
 	addInfo("Thrust to Weight",(frame*motor[i].max*0.95/mtow).toFixed(2),"");
 	//info += "Current: "+current.toFixed(2)+"A<br/>";
 	//info += "Battery: "+motor[motor_id].battery+"S"+battery_parallel+"P<br/>";
@@ -168,28 +180,39 @@ function main(){
 	for(mtow=mtow_min;mtow<=mtow_max;mtow+=mtow_step){
 		the_table += "<td>"+mtow.toFixed(2)+"kg</td>";
 	}
-		//HSVtoRGB(60,1,1);
+	the_table += "</tr>";
+	
+	// motor per baris
+	var is_grey;
 	for(i=0;i<motor.length;i++){
-		//console.log(motor[i].name);
-		the_table += "<tr align='center'>";
-		the_table += "<td>"+motor[i].name+"</td>";
-		the_table += "<td>"+motor[i].propeller+"</td>";
+		is_grey = true;
+		var row = "<tr align='center'>";
+		row += "<td>"+motor[i].name+"</td>";
+		row += "<td>"+motor[i].propeller+"</td>";
 		for(mtow=mtow_min;mtow<=mtow_max;mtow+=mtow_step){
 			var frame_weight;// = frame*motor[i].max-mtow;
 			var ttw = frame*motor[i].max*0.95/mtow;
 			var color;
 			//var info;
+			//max_ttw = Math.max(max_ttw,ttw);
 			frame_weight = calculate(mtow,i) - payload;
-			if(ttw<=1.0 || frame_weight<=0){
-				color = "#cccccc";
+			//max_frame = Math.max(max_frame,frame_weight);
+			if(ttw<=1.0){
+				row += "<td bgcolor='#cccccc' class='ht'><div class='tooltip'><b>Overweight</b></div></td>";
+			}else if(frame_weight<=0){
+				row += "<td bgcolor='#cccccc' class='ht'><div class='tooltip'><b>Negative Frame Weight</b></div></td>";
 			}else{
+				is_grey = false;
 				color = HSVtoRGB(mapTTW(ttw),0.4,1);
+				row += "<td bgcolor='"+color+"' class='ht'>"+frame_weight.toFixed(2)+"<div class='tooltip'>"+info+"</div></td>";
 			}
-			the_table += "<td bgcolor='"+color+"' class='ht'>"+frame_weight.toFixed(2)+"<div class='tooltip'>"+info+"</div></td>";
 		}
-		the_table += "</tr>";
+		row += "</tr>";
+		console.log(is_grey);
+		if(!(is_grey && hide_impossible)){
+			the_table += row;
+		}
 	}
-	the_table += "</tr>";
 
 	//table content
 
