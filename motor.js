@@ -1,5 +1,6 @@
 var motor = [];
 
+
 function readTextFile(){
 	//var fs;// = require('fs');
   

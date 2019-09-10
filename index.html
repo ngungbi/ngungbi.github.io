@@ -3,6 +3,7 @@
 <title>Thrust Table</title>
 <script src="motor.js"></script>
 <script src="motors.js"></script>
+<script src="batteries.js"></script>
 <script src="core.js"></script>
 <style>
 	body{
@@ -21,6 +22,9 @@
     position: absolute;
     z-index: 1000;
 }
+.tableheading{
+    font-weight: bold;
+}
 .copyright{
     margin-top:5pt;
     text-align: center;
@@ -29,7 +33,7 @@
 </head>
 <body onload="init();">
 
-<form>
+<form onsubmit="main();return false" >
 <h1>Multirotor Thrust Table</h1>
 Payload: <input type="text" name="payload" id="payload" value="0" size="3"/>kg<br/>
 Flight Time: <input type="text" name="flightTime" id="flightTime" value="20" size="3"/>minutes<br/>
@@ -46,7 +50,7 @@ MTOW:
 <input type="text" name="wMin" id="wMin" value="1" size="3"/>kg
 <input type="text" name="wStep" id="wStep" value="1" size="3" />kg
 <input type="text" name="wMax" id="wMax" value="15" size="3" />kg<br/>
-<input type="button" value="Calculate" onclick="main();"/>
+<input type="submit" value="Calculate" onclick="main();"/>
 <div id="theTable">
 </div>
 <br/>

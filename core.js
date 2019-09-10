@@ -6,22 +6,7 @@ var frame;
 var payload;
 var selected_battery;
 
-var battery = [];
-battery[0] = {
-	name:"Panasonic NCR18650GA",
-	weight:48,
-	capacity:3.2
-}
-battery[1] = {
-	name:"Aga Power 22000mAh",
-	weight:417,
-	capacity:22
-}
-battery[2] = {
-	name:"Tattu 6s 10000mAh",
-	weight:231,
-	capacity:10	
-}
+
 function getParams(){
 	flight_time = parseFloat(document.getElementById("flightTime").value);
 	selected_battery = parseInt(document.getElementById("battery").value);
@@ -134,7 +119,7 @@ function calculate(mtow,motor_id){
 	var frame_weight = mtow - 1.15 * drive_weight/1000.0;
 	var estimated_flight_time = 0.9 * 3600 * battery_parallel*battery[selected_battery].capacity / current;
 	//console.log(motor[motor_id].weight );
-	info = motor[motor_id].name + "<br/>";
+	info = "<b>"+motor[motor_id].name + "</b><br/>";
 	addInfo("Propeller",motor[motor_id].propeller,"");
 	addInfo("MTOW",mtow.toFixed(2),"kg");
 	addInfo("Current",current.toFixed(2),"A");
@@ -149,11 +134,29 @@ function calculate(mtow,motor_id){
 	//info += "Thrust to Weight: "+(frame*motor[i].max*0.95/mtow).toFixed(2) ;
 	return frame_weight;
 }
+function compare(a,b){
+	const motorA = a.propSize;
+	const motorB = b.propSize;
 
+	let comparison = 0;
+	if (motorA > motorB) {
+		comparison = 1;
+	} else{//} if (motorA &lt; motorB) {
+		comparison = -1;
+	}
+	return comparison;
+}
 function init(){
 	//parseCSV("motors.csv",";");
 	readTextFile();
 	generateBatteryList();
+	//motor.sort(compare);
+	for(var i=0;i<motor.length;i++){
+		var size = motor[i].propeller.split("x");
+		motor[i].propSize = Number(size[0]);
+		//console.log(motor[i].propsize);
+	}
+	motor.sort(compare);
 }
 function main(){
 	var the_table = "<table>";
@@ -161,7 +164,7 @@ function main(){
 	getParams();
 
 	// Make table header
-	the_table += "<tr align='center'><td>Motor</td><td>Propeller</td>";
+	the_table += "<tr align='center' class='tableheading'><td>Motor</td><td>Propeller</td>";
 	for(mtow=mtow_min;mtow<=mtow_max;mtow+=mtow_step){
 		the_table += "<td>"+mtow.toFixed(2)+"kg</td>";
 	}
